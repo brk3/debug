@@ -35,6 +35,11 @@ OPTIONS:
 EOF
 }
 
+if [ $# -eq 0 ]; then
+    usage
+    exit 1
+fi
+
 BUILD=false
 RUN=false
 INSTALL=false
@@ -79,9 +84,9 @@ done
 
 BUILD_CMD=${BUILD_CMD-"ssh dragon32 \"cd sandbox/sarge && ant debug\""}
 CLEAN_CMD=${CLEAN_CMD-"ssh dragon32 \"cd sandbox/sarge && ant clean\""}
-RUN_CMD=${RUN_CMD-"adb shell 'am start -a android.intent.action.MAIN -n com.bourke.sarge/.'$ACTIVITY"}
+RUN_CMD=${RUN_CMD-"adb shell 'am start -a android.intent.action.MAIN -n $PKG_NAME/.'$ACTIVITY"}
 INSTALL_CMD=${INSTALL_CMD-"adb install -r /mnt/sandbox-dragon32/sarge/bin/SargeActivity-debug.apk"}
-UNINSTALL_CMD=${UNINSTALL_CMD-"adb uninstall com.bourke.sarge"}
+UNINSTALL_CMD=${UNINSTALL_CMD-"adb uninstall $PKG_NAME"}
 
 if $RUN || $THEWORKS; then
     if [[ -z $ACTIVITY ]]; then
