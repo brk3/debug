@@ -20,7 +20,7 @@ usage()
 cat << EOF
 usage: debug.sh [-hrxubi] [-a ACTIVITY]
 
-Build and deploy android projects easily. Steps are taken in a logical 
+Build and deploy android projects easily. Steps are taken in a logical
 order regardless of ordering of arguments.
 
 OPTIONS:
