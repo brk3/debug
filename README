@@ -1,7 +1,7 @@
 About
 -----
-debug.sh is a small script I use to build, manage and deploy my projects
-from the command line.
+debug.sh is a small script I use to build, manage and deploy my android 
+projects from the command line, without Eclipse.
 
 Originally I simply used it to automate a few lines of something like
 'ant debug && adb install' but eventually got round to adding some more
