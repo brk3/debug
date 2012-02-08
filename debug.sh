@@ -125,10 +125,6 @@ if $INSTALL || $THEWORKS; then
 fi
 
 if $RUN || $THEWORKS; then
-    if [[ -z $ACTIVITY ]]; then
-        echo "Requires an activity to be specified (-a)"
-        exit 1
-    fi
     eval $RUN_CMD
 fi
 
