@@ -82,11 +82,20 @@ do
      esac
 done
 
-BUILD_CMD=${BUILD_CMD-"ssh dragon32 \"cd sandbox/sarge && ant debug\""}
-CLEAN_CMD=${CLEAN_CMD-"ssh dragon32 \"cd sandbox/sarge && ant clean\""}
-RUN_CMD=${RUN_CMD-"adb shell 'am start -a android.intent.action.MAIN -n $PKG_NAME/.'$ACTIVITY"}
-INSTALL_CMD=${INSTALL_CMD-"adb install -r /mnt/sandbox-dragon32/sarge/bin/SargeActivity-debug.apk"}
+BUILD_CMD=${BUILD_CMD-"ant debug"}
+CLEAN_CMD=${CLEAN_CMD-"ant clean"}
+PKG_NAME=${PKG_NAME}
+RUN_CMD=${RUN_CMD-"adb shell 'am start -a android.intent.action.MAIN -n \
+    $PKG_NAME/.'$ACTIVITY"}
+INSTALL_CMD=${INSTALL_CMD}
 UNINSTALL_CMD=${UNINSTALL_CMD-"adb uninstall $PKG_NAME"}
+
+if [[ -z $BUILD_CMD || -z $CLEAN_CMD || -z $PKG_NAME || -z $INSTALL_CMD || \
+    -z $UNINSTALL_CMD ]]; then
+    echo "Requires at minimum PKG_NAME and INSTALL_CMD environment \
+variables to be set."
+    exit 1
+fi
 
 if $RUN || $THEWORKS; then
     if [[ -z $ACTIVITY ]]; then
@@ -101,25 +110,23 @@ fi
 
 if $BUILD || $THEWORKS; then
     eval $BUILD_CMD
+    if [[ $? -ne 0 ]]; then
+        exit 1
+    fi
 fi
 
 if $UNINSTALL || $THEWORKS; then
-    if [[ $? -ne 0 ]]; then
-        echo "Previous step exited with $?, not continuing"
-        exit 1
-    fi
     eval $UNINSTALL_CMD
+    # Dont check uninstall status, it may not apply
 fi
 
-# Dont check uninstall status, it may not apply
 if $INSTALL || $THEWORKS; then
     eval $INSTALL_CMD
 fi
 
 if $RUN || $THEWORKS; then
     if [[ -z $ACTIVITY ]]; then
-        echo "Missing required option -a"
-        usage
+        echo "Requires an activity to be specified (-a)"
         exit 1
     fi
     eval $RUN_CMD

@@ -1,6 +1,6 @@
 About
 -----
-debug.sh is a small script I use to build, manage and deploy my android 
+debug.sh is a small script I use to build, manage and deploy my android
 projects from the command line, without Eclipse.
 
 Originally I simply used it to automate a few lines of something like
@@ -12,15 +12,20 @@ stage to running ./debug.sh that it would annoy me to change it!
 
 Usage
 -----
-The usage message should be fairly self explanitory, the only part that
-you will need to change are *_CMD env variables.
+Recommended way is add a simple environment file to your project that looks
+something like the following:
 
-The ones there at the moment are examples of what I currently use to run 
-builds on my build machine.  A more standard case would be to add something 
-like the following to your bashrc:
+export PKG_NAME="com.bourke.roidrage"
+export INSTALL_CMD="adb install -r bin/RoidRage-debug.apk"
 
-export BUILD_CMD="ant debug"
-export CLEAN_CMD="ant clean"
-export INSTALL_CMD="adb install -r bin/<my-app>-debug.apk"
-export UNINSTALL_CMD="adb uninstall <my-package>"
+Then when you open a shell just source the above:
 
+$ source debug.env
+
+Building, re-installing and launching your project is now as easy as:
+
+$ ./debug.sh -xa <Activity>
+
+
+Most commands used can be overridden, have a look at the usage message or
+browse through the script for more info.
