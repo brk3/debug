@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2011 Paul Bourke <pauldbourke@gmail.com>
+# Copyright (C) 2012 Paul Bourke <pauldbourke@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ OPTIONS:
     -i      Install
     -c      Clean
     -r      Run activity
-    -x      The works, i.e. all of the above (-buir)
     -a      Activity to start once installed
+    -x      The works, i.e. all of the above (-buira)
     -h      Show this message
 EOF
 }
@@ -84,18 +84,12 @@ done
 
 BUILD_CMD=${BUILD_CMD-"ant debug"}
 CLEAN_CMD=${CLEAN_CMD-"ant clean"}
-PKG_NAME=${PKG_NAME}
+PKG_NAME=${PKG_NAME-"$(grep 'package' AndroidManifest.xml | \
+    awk -F= '{ print $2 }' | sed "s/^\([\"']\)\(.*\)\1\$/\2/g")"}
 RUN_CMD=${RUN_CMD-"adb shell 'am start -a android.intent.action.MAIN -n \
     $PKG_NAME/.'$ACTIVITY"}
-INSTALL_CMD=${INSTALL_CMD}
+INSTALL_CMD=${INSTALL_CMD-"ant debug install"}
 UNINSTALL_CMD=${UNINSTALL_CMD-"adb uninstall $PKG_NAME"}
-
-if [[ -z $BUILD_CMD || -z $CLEAN_CMD || -z $PKG_NAME || -z $INSTALL_CMD || \
-    -z $UNINSTALL_CMD ]]; then
-    echo "Requires at minimum PKG_NAME and INSTALL_CMD environment \
-variables to be set."
-    exit 1
-fi
 
 if $RUN || $THEWORKS; then
     if [[ -z $ACTIVITY ]]; then
@@ -127,4 +121,3 @@ fi
 if $RUN || $THEWORKS; then
     eval $RUN_CMD
 fi
-
