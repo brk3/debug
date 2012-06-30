@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+set -e
+
 usage()
 {
 cat << EOF
@@ -103,15 +105,18 @@ if $CLEAN; then
 fi
 
 if $BUILD || $THEWORKS; then
-    eval $BUILD_CMD
-    if [[ $? -ne 0 ]]; then
-        exit 1
+    # As of adt 20 'debug install' also builds. So no need to run this
+    # step if we've been given -i
+    if [[ ! $INSTALL ]]; then
+        eval $BUILD_CMD
     fi
 fi
 
 if $UNINSTALL || $THEWORKS; then
-    eval $UNINSTALL_CMD
     # Dont check uninstall status, it may not apply
+    set +e
+    eval $UNINSTALL_CMD
+    set -e
 fi
 
 if $INSTALL || $THEWORKS; then
@@ -121,3 +126,5 @@ fi
 if $RUN || $THEWORKS; then
     eval $RUN_CMD
 fi
+
+set +e
